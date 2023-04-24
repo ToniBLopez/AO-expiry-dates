@@ -1,12 +1,13 @@
 import './App.scss'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-// import LoginPage from './scenes/loginPage'
-// import HomePage from './scenes/homePage'
-import AddDates from './pages/AddDates'
-import SeeDates from './pages/SeeDates'
+import HomePage from './pages/HomePage'
+import AllPage from './pages/AllPage'
+import DonePage from './pages/DonePage'
+import NotDonePage from './pages/NotDonePage'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme.js'
+// import { Home } from '@mui/icons-material'
 // import { useSelector } from 'react-redux'
 
 const App = () => {
@@ -23,8 +24,10 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Navigate to='/home' />} />
             <Route path='/home'>
-              <Route index element={<AddDates />}/>
-              <Route path='check' element={<SeeDates />}/>
+              <Route index element={<HomePage />}/>
+              <Route path='all' element={<AllPage />}/>
+              <Route path='done' element={<DonePage />}/>
+              <Route path='notdone' element={<NotDonePage />}/>
             </Route>
           </Routes>
         </ThemeProvider>
