@@ -7,7 +7,6 @@ import NotDonePage from './pages/NotDonePage'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme.js'
-// import { Home } from '@mui/icons-material'
 // import { useSelector } from 'react-redux'
 
 const App = () => {

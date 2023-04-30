@@ -17,6 +17,7 @@ function Header() {
           width: '100%',
           justifyContent: 'center',
           mt: '50px',
+          mb: '30px'
         }}
       >
         <Typography

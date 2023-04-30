@@ -1,55 +1,118 @@
 import { Box, TextField, Button, useTheme } from "@mui/material"
+// import { useFormik } from 'formik'
 
 function AddDates() {
   const theme = useTheme()
+  let nameId;
+  let expiryDateId;
+
+  // const onSubmit = async (values, actions) => isLogin
+  //   ? await login(values, actions)
+  //   : await register(values, actions)
+  // const {
+  //   values,
+  //   errors,
+  //   touched,
+  //   setFieldValue,
+  //   handleChange,
+  //   handleBlur,
+  //   handleSubmit,
+  //   resetForm
+  // } = useFormik({
+  //   initialValues: isLogin ? initialValuesLogin : initialValuesRegister,
+  //   validationSchema: isLogin ? loginSchema : registerSchema,
+  //   onSubmit,
+  // })
+
+  const createOne = async () => {
+    try {
+      nameId = document.getElementById('nameId').value
+      expiryDateId = document.getElementById('expiryDateId').value
+      /* CREATE */
+      const response = await fetch(
+        'http://localhost:8000/home/product',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: nameId,
+            expiryDate: expiryDateId
+          })
+        }
+      )
+      const savedResponse = await response.json()
+      if (response.ok) {
+        console.group('productCreated.ok')
+        console.log(savedResponse)
+        console.groupEnd()
+      } else {
+        console.error(savedResponse.error)
+      }
+    } catch (err) {
+      console.err(err)
+    }
+  }
 
   return (
-    <>
-      <Box
+    // <form onSubmit={handleSubmit} encType='multipart/form-data'>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        bottom: '120px',
+        height: '180px',
+        width: '300px',
+        justifyContent: 'space-between',
+        borderRadius: '8px',
+        p: '10px',
+        backgroundColor: theme.palette.secondary.main,
+      }}
+    >
+      <TextField
+        required
+        id="nameId"
+        label='Name'
+        name='name'
+        type="name"
+        variant='outlined'
+        // onBlur={handleBlur}
+        // onChange={handleChange}
+        // value={values.email}
+        // error={Boolean(touched.email) && Boolean(errors.email)}
+        // helperText={touched.email && errors.email}
+        placeholder='Pechuga de Pollo'
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'fixed',
-          bottom: '120px',
-          height: '180px',
-          width: '300px',
-          justifyContent: 'space-between',
-          borderRadius: '8px',
-          p: '10px',
-          backgroundColor: theme.palette.secondary.main,
+          color: theme.palette.primary.main
+        }}
+      />
+
+      <TextField
+        required
+        id="expiryDateId"
+        label='Date'
+        name='date'
+        placeholder='DD.MM.YYYY'
+        variant='outlined'
+        sx={{
+          color: theme.palette.primary.main
+        }}
+      />
+
+      <Button
+        type='submit'
+        variant='contained'
+        onClick={createOne}
+        sx={{
+          fontWeight: 'bold'
         }}
       >
-        <TextField
-          required
-          label='Name'
-          name='name'
-          placeholder='Pechuga de Pollo'
-          variant='outlined'
-          sx={{
-            color: theme.palette.primary.main
-          }}
-        />
-
-        <TextField
-          required
-          label='Date'
-          name='date'
-          placeholder='DD.MM.YYYY'
-          variant='outlined'
-          sx={{
-            color: theme.palette.primary.main
-          }}
-        />
-
-        <Button
-          type='submit'
-          variant='contained'
-          // onClick={() => true}
-        >
-          Send
-        </Button>
-      </Box>
-    </>
+        Send
+      </Button>
+    </Box>
+    // </form>
   )
 }
 
