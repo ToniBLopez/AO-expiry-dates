@@ -1,9 +1,25 @@
-import { setProducts } from '../../state'
+import { setPage, setProducts } from '../../state'
 
-const getProducts = async (dispatch, selectedData) => {
+const getProducts = async (batch, dispatch, page) => {
+  let selectedData;
+  switch (page) {
+    case 'home':
+      selectedData = 'weekly'
+      break;
+    case 'all':
+      selectedData = 'all'
+      break;
+    case 'not done':
+      selectedData = 'notDone'
+      break;
+    case 'done':
+      selectedData = 'done'
+      break;
+  }
+
   try {
     const datesResponse = await fetch(
-      `http://localhost:8000/home/${selectedData}`,
+      `http://localhost:8000/products/${selectedData}`,
       {
         method: 'GET'
       }
@@ -20,13 +36,14 @@ const getProducts = async (dispatch, selectedData) => {
         return acc
       }, {})
       console.log(gatherDataByDate)
-      dispatch(setProducts({ products: gatherDataByDate }))
+      batch(() => {
+        dispatch(setPage({ page }))
+        dispatch(setProducts({ products: gatherDataByDate }))
+      })
     } else {
       console.error(savedDatesResponse.error)
-      dispatch(setProducts({ products: null }))
     }
   } catch (err) {
-    dispatch(setProducts({ products: null }))
     console.error(err)
   }
 }

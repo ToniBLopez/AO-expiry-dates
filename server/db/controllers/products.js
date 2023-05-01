@@ -11,9 +11,9 @@ const productsCollection = {
     }
   },
   getWeeklyProducts: async (res) => {
-    const today = new Date();
-    const weekStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay()).toISOString();
-    const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 6).toISOString();
+    const today = new Date()
+    const weekStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString()
+    const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toISOString()
     try {
       const productsData = await Product.find({
         expiryDate: {

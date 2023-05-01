@@ -6,8 +6,7 @@ import {
 } from '@mui/material'
 import Header from '../components/Header'
 import Menu from '../components/Menu'
-import { useSelector, useDispatch } from 'react-redux'
-import { setPage } from '../../state'
+import { useSelector, batch, useDispatch } from 'react-redux'
 import { useEffect, useState, memo } from 'react'
 import getProducts from '../utils/getProducts'
 
@@ -21,13 +20,8 @@ const index = () => {
 
   useEffect(() => {
     console.log('dentro de getProducts useEffect')
-    dispatch(
-      setPage({
-        page: 'home'
-      })
-    )
     const fetchProducts = async () => {
-      await getProducts(dispatch, 'weeklyProducts')
+      await getProducts(batch, dispatch, 'home')
       setLoading(false)
     }
     fetchProducts()
@@ -36,11 +30,11 @@ const index = () => {
   return (
     <Box>
       <Header />
-      <Menu />
       <Box
         sx={{
           width: '100%',
-          p: '0px 30px'
+          p: '0px 30px',
+          mb: '120px'
         }}
       >
         {loading
@@ -57,7 +51,7 @@ const index = () => {
                   key={formattedDate}
                   sx={{
                     width: '100%',
-                    mb: '20px'
+                    mb: '8px'
                   }}
                 >
                   <Typography
@@ -96,6 +90,7 @@ const index = () => {
           )
         }
       </Box>
+      <Menu />
     </Box>
   )
 }

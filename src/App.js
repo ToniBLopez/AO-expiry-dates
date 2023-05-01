@@ -23,10 +23,10 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Navigate to='/home' />} />
             <Route path='/home'>
-              <Route index element={<HomePage />}/>
-              <Route path='all' element={<AllPage />}/>
-              <Route path='done' element={<DonePage />}/>
-              <Route path='notdone' element={<NotDonePage />}/>
+              <Route index element={<HomePage />} />
+              <Route path='all' element={<AllPage />} />
+              <Route path='notdone' element={<NotDonePage />} />
+              <Route path='done' element={<DonePage />} />
             </Route>
           </Routes>
         </ThemeProvider>

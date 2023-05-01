@@ -36,6 +36,9 @@ export const colorTokens = {
   secondary: {
     500: '#E3BD9B'
   },
+  selected: {
+    0: '#006B7D'
+  }
 }
 
 export const themeSettings = (mode) => {
@@ -52,6 +55,9 @@ export const themeSettings = (mode) => {
           },
           secondary: {
             main: colorTokens.secondary[500],
+          },
+          selected: {
+            default: colorTokens.selected[0],
           },
           neutral: {
             dark: colorTokens.grey[100],
@@ -74,6 +80,9 @@ export const themeSettings = (mode) => {
           },
           secondary: {
             main: colorTokens.secondary[500],
+          },
+          selected: {
+            default: colorTokens.selected[0],
           },
           neutral: {
             dark: colorTokens.grey[700],

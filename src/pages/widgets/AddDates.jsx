@@ -1,12 +1,22 @@
-import { Box, TextField, Button, useTheme } from "@mui/material"
-import { useEffect, useState, memo } from "react"
-import { useDispatch } from 'react-redux'
+import {
+  Box,
+  TextField,
+  Button,
+  useTheme
+} from "@mui/material"
+import {
+  useEffect,
+  useState,
+  memo
+} from "react"
+import { useSelector, batch, useDispatch } from 'react-redux'
 import getProducts from "../utils/getProducts"
 // import { useFormik } from 'formik'
 
 const AddDates = () => {
-  const dispatch = useDispatch()
   const theme = useTheme()
+  const dispatch = useDispatch()
+  const { page } = useSelector(state => state)
   let nameId;
   let expiryDateId;
 
@@ -51,7 +61,7 @@ const AddDates = () => {
         console.group('productCreated.ok')
         console.log(savedResponse)
         console.groupEnd()
-        await getProducts(dispatch, 'weeklyProducts')
+        await getProducts(batch, dispatch, page)
       } else {
         console.error(savedResponse.error)
       }
@@ -66,7 +76,7 @@ const AddDates = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        position: 'absolute',
+        position: 'fixed',
         bottom: '120px',
         height: '180px',
         width: '300px',
