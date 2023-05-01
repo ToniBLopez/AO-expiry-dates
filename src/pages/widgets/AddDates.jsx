@@ -44,7 +44,7 @@ const AddDates = () => {
       expiryDateId = document.getElementById('expiryDateId').value
       /* CREATE */
       const response = await fetch(
-        'http://localhost:8000/home/product',
+        'http://localhost:8000/products/createOne',
         {
           method: 'POST',
           headers: {
@@ -63,10 +63,10 @@ const AddDates = () => {
         console.groupEnd()
         await getProducts(batch, dispatch, page)
       } else {
-        console.error(savedResponse.error)
+        console.error(savedResponse.message)
       }
     } catch (err) {
-      console.err(err)
+      console.error(err)
     }
   }
 

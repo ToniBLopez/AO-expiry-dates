@@ -13,13 +13,36 @@ import getProducts from '../utils/getProducts'
 const index = () => {
   console.log('renders')
   const [loading, setLoading] = useState(true)
-  const { products } = useSelector(state => state)
+  const { products, page } = useSelector(state => state)
   const dispatch = useDispatch()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const theme = useTheme()
 
+  const patchDone = async (_id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/products/updateDone`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ productId: _id }),
+        }
+      )
+      const updatedDate = await response.json();
+      if (response.ok) {
+        console.log(updatedDate.message)
+        await getProducts(batch, dispatch, page)
+      } else {
+        console.error(updatedDate.message)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   useEffect(() => {
-    console.log('dentro de getProducts useEffect')
     const fetchProducts = async () => {
       await getProducts(batch, dispatch, 'home')
       setLoading(false)
@@ -42,13 +65,13 @@ const index = () => {
           <Typography>Loading...</Typography>
           :
           Object.keys(products).map(
-            el => {
+            (el, index) => {
               const date = new Date(el);
               const formatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
               const formattedDate = date.toLocaleDateString('es-ES', formatOptions).replace(/\//g, '.');
               return (
                 <Box
-                  key={formattedDate}
+                  key={index}
                   sx={{
                     width: '100%',
                     mb: '8px'
@@ -64,15 +87,22 @@ const index = () => {
                     {formattedDate}
                   </Typography>
                   {
-                    products[el].map(el =>
+                    products[el].map((el, index) =>
                       <Box
-                        key={JSON.stringify(el)}
+                        key={index}
                         sx={{
                           display: 'flex',
                           alignItems: 'center',
                         }}
                       >
-                        <Checkbox {...label} />
+                        <Checkbox
+                          checked={el.done}
+                          onClick={() => patchDone(el._id)}
+                          sx={{
+                            zIndex: 0,
+                          }}
+                          {...label}
+                        />
                         <Typography
                           variant='p'
                           sx={{

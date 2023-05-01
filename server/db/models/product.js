@@ -39,6 +39,10 @@ const productSchema = new Schema({
     //   message: props => `${props.value} no es una fecha de expiración válida, debe estar separado por puntos y no exceder la cantidad de días (31) y meses (12) `
     // }
   },
+  done: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     immutable: true,

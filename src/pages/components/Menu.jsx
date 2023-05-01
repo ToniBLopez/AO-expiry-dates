@@ -9,17 +9,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddDates from '../widgets/AddDates';
 import Options from '../widgets/Options';
 import { useState, memo, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { batch, useDispatch } from 'react-redux'
+import getProducts from '../utils/getProducts'
 
 const Menu = () => {
   const theme = useTheme()
   const [addDates, setAddDates] = useState(false)
   const [chooseAnOption, setChooseAnOption] = useState(false)
-  const { page } = useSelector(state => state)
   const dispatch = useDispatch()
 
   const goToHome = async () => {
-    await getProducts(dispatch, 'home')
+    await getProducts(batch, dispatch, 'home')
   }
 
   useEffect(() => {
@@ -40,6 +40,7 @@ const Menu = () => {
     <Box
       sx={{
         display: 'flex',
+        zIndex: 10,
         justifyContent: 'center'
       }}
     >
@@ -50,14 +51,14 @@ const Menu = () => {
       <Box
         sx={{
           display: 'grid',
-          padding: '0px 40px',
-          alignContent: 'center',
+          position: 'fixed',
           gridTemplateColumns: '1fr 1fr',
+          padding: '0px 40px',
           width: '100%',
           height: '80px',
-          position: 'fixed',
           bottom: '0',
           backgroundColor: theme.palette.primary.main,
+          alignContent: 'center',
         }}
       >
         <HomeIcon
@@ -86,7 +87,7 @@ const Menu = () => {
 
       {addDates
         &&
-        <AddDates />
+        <AddDates/>
       }
       <Box
         onClick={() => setAddDates(!addDates)}

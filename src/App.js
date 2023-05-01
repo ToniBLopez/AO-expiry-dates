@@ -1,9 +1,6 @@
 import './App.scss'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
-import AllPage from './pages/AllPage'
-import DonePage from './pages/DonePage'
-import NotDonePage from './pages/NotDonePage'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme.js'
@@ -24,9 +21,6 @@ const App = () => {
             <Route path='/' element={<Navigate to='/home' />} />
             <Route path='/home'>
               <Route index element={<HomePage />} />
-              <Route path='all' element={<AllPage />} />
-              <Route path='notdone' element={<NotDonePage />} />
-              <Route path='done' element={<DonePage />} />
             </Route>
           </Routes>
         </ThemeProvider>

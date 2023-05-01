@@ -3,16 +3,20 @@ import {
   Button,
   useTheme
 } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import getProducts from "../utils/getProducts"
+import { batch, useDispatch } from 'react-redux'
 
 const Options = () => {
   const theme = useTheme()
-  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const renderButton = (page, text, marginBottom) => {
+  const renderButton = (text, marginBottom) => {
     return (
       <Button
-        onClick={() => { navigate(`/home/${page}`) }}
+        key={text}
+        onClick={async () => {
+          await getProducts(batch, dispatch, text)
+        }}
         variant='contained'
         sx={{
           mb: marginBottom,
@@ -40,9 +44,9 @@ const Options = () => {
         backgroundColor: theme.palette.secondary.main,
       }}
     >
-      {renderButton('all', 'All', '8px')}
-      {renderButton('notDone', 'Not Done', '8px')}
-      {renderButton('done', 'Done')}
+      {renderButton('all', '8px')}
+      {renderButton('not done', '8px')}
+      {renderButton('done')}
     </Box>
   )
 }

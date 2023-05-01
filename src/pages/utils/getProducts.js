@@ -26,7 +26,7 @@ const getProducts = async (batch, dispatch, page) => {
     )
     const savedDatesResponse = await datesResponse.json()
     if (datesResponse.ok) {
-      const gatherDataByDate = savedDatesResponse.reduce((acc, obj) => {
+      const dataGroupedByDate = savedDatesResponse.reduce((acc, obj) => {
         const date = obj.expiryDate
         if (!acc[date]) {
           acc[date] = [obj]
@@ -35,13 +35,13 @@ const getProducts = async (batch, dispatch, page) => {
         }
         return acc
       }, {})
-      console.log(gatherDataByDate)
+      console.log(dataGroupedByDate)
       batch(() => {
         dispatch(setPage({ page }))
-        dispatch(setProducts({ products: gatherDataByDate }))
+        dispatch(setProducts({ products: dataGroupedByDate }))
       })
     } else {
-      console.error(savedDatesResponse.error)
+      console.error(savedDatesResponse.message)
     }
   } catch (err) {
     console.error(err)
