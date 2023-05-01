@@ -6,64 +6,31 @@ import {
 } from '@mui/material'
 import Header from '../components/Header'
 import Menu from '../components/Menu'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { setPage } from '../../state'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, memo } from 'react'
+import getProducts from '../utils/getProducts'
 
 const index = () => {
   console.log('renders')
   const [loading, setLoading] = useState(true)
-  const [groupedData, setGroupedData] = useState({})
-
-  const today = new Date()
-  const currentYear = today.getDate().toString().padStart(2, '0')
-  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0')
-  const currentDay = today.getFullYear().toString()
-  const todaysDate = `${currentDay}.${currentMonth}.${currentYear}`
-
+  const { products } = useSelector(state => state)
+  const dispatch = useDispatch()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const theme = useTheme()
-  const dispatch = useDispatch()
-  dispatch(
-    setPage({
-      page: 'home'
-    })
-  )
 
   useEffect(() => {
-    const getDates = async () => {
-      try {
-        /* GET */
-        const datesResponse = await fetch(
-          'http://localhost:8000/home/products',
-          {
-            method: 'GET'
-          }
-        )
-        const savedDatesResponse = await datesResponse.json()
-        if (datesResponse.ok) {
-          const gatherDataByDate = savedDatesResponse.reduce((acc, obj) => {
-            const date = obj.expiryDate
-            if (!acc[date]) {
-              acc[date] = [obj]
-            } else {
-              acc[date].push(obj)
-            }
-            return acc
-          }, {})
-          setGroupedData(gatherDataByDate)
-          console.log(gatherDataByDate)
-          setLoading(false)
-        } else {
-          console.error(savedDatesResponse.error)
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error(err)
-        setLoading(false)
-      }
+    console.log('dentro de getProducts useEffect')
+    dispatch(
+      setPage({
+        page: 'home'
+      })
+    )
+    const fetchProducts = async () => {
+      await getProducts(dispatch, 'weeklyProducts')
+      setLoading(false)
     }
-    getDates()
+    fetchProducts()
   }, [])
 
   return (
@@ -80,47 +47,52 @@ const index = () => {
           ?
           <Typography>Loading...</Typography>
           :
-          Object.keys(groupedData).map(
-            el =>
-              <Box
-                key={el}
-                sx={{
-                  width: '100%',
-                  mb: '20px'
-                }}
-              >
-                <Typography
-                  variant='h3'
+          Object.keys(products).map(
+            el => {
+              const date = new Date(el);
+              const formatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+              const formattedDate = date.toLocaleDateString('es-ES', formatOptions).replace(/\//g, '.');
+              return (
+                <Box
+                  key={formattedDate}
                   sx={{
-                    fontWeight: "bold",
-                    color: theme.palette.primary.main
+                    width: '100%',
+                    mb: '20px'
                   }}
                 >
-                  {el}
-                </Typography>
-
-                {
-                  groupedData[el].map(el =>
-                    <Box
-                      key={JSON.stringify(el)}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Checkbox {...label} />
-                      <Typography
-                        variant='p'
+                  <Typography
+                    variant='h3'
+                    sx={{
+                      fontWeight: "bold",
+                      color: theme.palette.primary.main
+                    }}
+                  >
+                    {formattedDate}
+                  </Typography>
+                  {
+                    products[el].map(el =>
+                      <Box
+                        key={JSON.stringify(el)}
                         sx={{
-                          fontWeight: "bold",
+                          display: 'flex',
+                          alignItems: 'center',
                         }}
                       >
-                        {el.name}
-                      </Typography>
-                    </Box>
-                  )
-                }
-              </Box>
+                        <Checkbox {...label} />
+                        <Typography
+                          variant='p'
+                          sx={{
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {el.name}
+                        </Typography>
+                      </Box>
+                    )
+                  }
+                </Box>
+              )
+            }
           )
         }
       </Box>
@@ -128,8 +100,5 @@ const index = () => {
   )
 }
 
-/* {
-  JSON.stringify(groupedData)
-} */
-
-export default index
+export default memo(index)
+// export default index

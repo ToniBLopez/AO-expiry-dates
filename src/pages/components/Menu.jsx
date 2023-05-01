@@ -9,11 +9,10 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddDates from '../widgets/AddDates';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-function Menu() {
+const Menu = () => {
   const theme = useTheme()
-
   const [addDates, setAddDates] = useState(false)
 
   return (
@@ -95,4 +94,5 @@ function Menu() {
   )
 }
 
-export default Menu
+export default memo(Menu)
+// export default Menu

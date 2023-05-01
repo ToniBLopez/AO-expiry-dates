@@ -1,7 +1,11 @@
 import { Box, TextField, Button, useTheme } from "@mui/material"
+import { useEffect, useState, memo } from "react"
+import { useDispatch } from 'react-redux'
+import getProducts from "../utils/getProducts"
 // import { useFormik } from 'formik'
 
-function AddDates() {
+const AddDates = () => {
+  const dispatch = useDispatch()
   const theme = useTheme()
   let nameId;
   let expiryDateId;
@@ -47,6 +51,7 @@ function AddDates() {
         console.group('productCreated.ok')
         console.log(savedResponse)
         console.groupEnd()
+        await getProducts(dispatch, 'weeklyProducts')
       } else {
         console.error(savedResponse.error)
       }
@@ -116,4 +121,5 @@ function AddDates() {
   )
 }
 
-export default AddDates
+export default memo(AddDates)
+// export default AddDates
