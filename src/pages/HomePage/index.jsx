@@ -21,7 +21,7 @@ const index = () => {
   const patchDone = async (_id) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/products/updateDone`,
+        `http://expirydates.fly.dev/products/updateDone`,
         {
           method: "PATCH",
           headers: {

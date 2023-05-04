@@ -1,5 +1,5 @@
 {
-  "name": "AO-Expiry-Dates",
+  "name": "expirydates",
   "version": "0.0.0",
   "description": "This project has been created to facilitate the review of expiration dates and increase their control",
   "main": "index.js",

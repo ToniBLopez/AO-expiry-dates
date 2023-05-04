@@ -37,11 +37,11 @@ const rules = [rulesForJavascript, rulesForStyles, rulesForSasStyles]
 
 module.exports = {
   entry: './src/index.js',
-  // mode: 'production',
-  mode: 'development',
+  mode: 'production',
+  // mode: 'development',
   output: {
     path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
+    publicPath: '',
     filename: 'bundle.js'
   },
   optimization: {
@@ -72,7 +72,7 @@ module.exports = {
       csp: {
         directives: {
           defaultSrc: ["'self'"],
-          connectSrc: ["'self'", "http://almacen.fly.dev"],
+          connectSrc: ["'self'", "http://expirydates.fly.dev"],
         },
         enabled: true,
       }

@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-// const helmet = require('helmet')
+const helmet = require('helmet')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -16,15 +16,14 @@ const routes = require('./routes')
 const app = express()
 app.use(express.json())
 /* ONLY FOR PRODUCTION */
-// app.use(helmet())
-// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
-// app.use(helmet.contentSecurityPolicy({ // Set the CSP policy
-//   directives: {
-//     defaultSrc: ["'self'"],
-//     // connectSrc: ["'self'", "http://socialmediaproject.fly.dev"],
-//     connectSrc: ["'self'", "http://localhost:8000/"],
-//   }
-// }))
+app.use(helmet())
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
+app.use(helmet.contentSecurityPolicy({ // Set the CSP policy
+  directives: {
+    defaultSrc: ["'self'"],
+    connectSrc: ["'self'", "http://expirydates.fly.dev"],
+  }
+}))
 // Logs HTTP requests arriving to the server in the console
 app.use(morgan("common"))
 app.use(bodyParser.json({ limit: "30mb", extended: true }))
@@ -35,7 +34,7 @@ app.use(express.static(path.join(__dirname, '../build')))
 // Allows the use of static files, in this case images
 app.use("/assets", express.static(path.join(__dirname, "../public/assets")))
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8080
 
 // DB CONNECTION
 connectToDb(err => {

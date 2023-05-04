@@ -19,7 +19,7 @@ const getProducts = async (batch, dispatch, page) => {
 
   try {
     const datesResponse = await fetch(
-      `http://localhost:8000/products/${selectedData}`,
+      `http://expirydates.fly.dev/products/${selectedData}`,
       {
         method: 'GET'
       }

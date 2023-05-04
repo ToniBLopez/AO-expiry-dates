@@ -34,11 +34,11 @@ const container = document.getElementById('root')
 const root = createRoot(container)
 root.render(
   // <React.StrictMode> Is only for development mode, remove for production
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStore(store)}>
         <App />
       </PersistGate>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 )
