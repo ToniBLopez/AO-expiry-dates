@@ -6,49 +6,111 @@ import {
 } from '@mui/material'
 import Header from '../components/Header'
 import Menu from '../components/Menu'
-import { useSelector, batch, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useEffect, useState, memo } from 'react'
-import getProducts from '../utils/getProducts'
 
 const index = () => {
   console.log('renders')
-  const [loading, setLoading] = useState(true)
-  const { products, page } = useSelector(state => state)
-  const dispatch = useDispatch()
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
   const theme = useTheme()
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+  const [clickOnCheck, setClickOnCheck] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState({})
+  const [productDone, setProductDone] = useState({})
+  const { page, newProduct } = useSelector(state => state)
 
-  const patchDone = async (_id) => {
-    try {
-      const response = await fetch(
-        `http://expirydates.fly.dev/products/updateDone`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ productId: _id }),
-        }
-      )
-      const updatedDate = await response.json();
-      if (response.ok) {
-        console.log(updatedDate.message)
-        await getProducts(batch, dispatch, page)
-      } else {
-        console.error(updatedDate.message)
-      }
-    } catch (err) {
-      console.error(err)
+  useEffect(() => {
+    let selectedData
+    switch (page) {
+      case 'home':
+        selectedData = 'weekly'
+        break;
+      case 'not done':
+        selectedData = 'notDone'
+        break;
+      default:
+        selectedData = page
+        break;
     }
+
+    const productsData = async () => {
+      try {
+        const datesResponse = await fetch(
+          `http://localhost:8080/products/${selectedData}`,
+          {
+            method: 'GET'
+          }
+        )
+        const savedDatesResponse = await datesResponse.json()
+        if (datesResponse.ok) {
+          const dataGroupedByDate = savedDatesResponse.reduce((acc, obj) => {
+            const date = obj.expiryDate
+            if (!acc[date]) {
+              acc[date] = [obj]
+            } else {
+              acc[date].push(obj)
+            }
+            return acc
+          }, {})
+          setProducts(dataGroupedByDate)
+          const initialDoneState = {}
+          Object.keys(dataGroupedByDate).forEach(date => {
+            dataGroupedByDate[date].forEach(product => {
+              initialDoneState[product._id] = product.done
+            })
+          })
+          setProductDone(initialDoneState)
+          setLoading(false)
+        } else {
+          console.error(savedDatesResponse.message)
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    productsData()
+  }, [page, newProduct])
+
+  const isCheck = (_id) => {
+    const updatedProductDone = {
+      ...productDone,
+      lastUpdatedId: _id,
+      [_id]: !productDone[_id]
+    }
+    setProductDone(updatedProductDone)
+    setClickOnCheck(true)
   }
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      await getProducts(batch, dispatch, 'home')
-      setLoading(false)
+    if (clickOnCheck) {
+      const updateCheck = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:8080/products/updateDone`,
+            {
+              method: 'PATCH',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ productId: productDone['lastUpdatedId'] }),
+            }
+          )
+          const savedResponse = await response.json()
+          if (response.ok) {
+            console.log(savedResponse)
+            setClickOnCheck(false)
+          } else {
+            console.error(savedResponse)
+            setClickOnCheck(false)
+          }
+        } catch (err) {
+          console.error(err)
+          setClickOnCheck(false)
+        }
+      }
+      updateCheck()
     }
-    fetchProducts()
-  }, [])
+  }, [productDone])
 
   return (
     <Box>
@@ -87,31 +149,34 @@ const index = () => {
                     {formattedDate}
                   </Typography>
                   {
-                    products[el].map((el, index) =>
-                      <Box
-                        key={index}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <Checkbox
-                          checked={el.done}
-                          onClick={() => patchDone(el._id)}
+                    products[el].map((el, index) => {
+                      return (
+                        <Box
+                          key={index}
                           sx={{
-                            zIndex: 0,
-                          }}
-                          {...label}
-                        />
-                        <Typography
-                          variant='p'
-                          sx={{
-                            fontWeight: "bold",
+                            display: 'flex',
+                            alignItems: 'center',
                           }}
                         >
-                          {el.name}
-                        </Typography>
-                      </Box>
+                          <Checkbox
+                            checked={productDone[el._id]}
+                            onChange={() => isCheck(el._id)}
+                            sx={{
+                              zIndex: 0,
+                            }}
+                            {...label}
+                          />
+                          <Typography
+                            variant='p'
+                            sx={{
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {el.name}
+                          </Typography>
+                        </Box>
+                      )
+                    }
                     )
                   }
                 </Box>

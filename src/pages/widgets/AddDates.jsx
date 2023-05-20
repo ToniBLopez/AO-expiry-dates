@@ -10,13 +10,12 @@ import {
   memo
 } from "react"
 import { useSelector, batch, useDispatch } from 'react-redux'
-import getProducts from "../utils/getProducts"
+import { setNewProduct } from "../../state"
 // import { useFormik } from 'formik'
 
 const AddDates = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  const { page } = useSelector(state => state)
   let nameId;
   let expiryDateId;
 
@@ -44,7 +43,7 @@ const AddDates = () => {
       expiryDateId = document.getElementById('expiryDateId').value
       /* CREATE */
       const response = await fetch(
-        'http://expirydates.fly.dev/products/createOne',
+        'http://localhost:8080/products/createOne',
         {
           method: 'POST',
           headers: {
@@ -61,9 +60,10 @@ const AddDates = () => {
         console.group('productCreated.ok')
         console.log(savedResponse)
         console.groupEnd()
-        await getProducts(batch, dispatch, page)
+        dispatch(setNewProduct())
+        // await getProducts(dispatch, page)
       } else {
-        console.error(savedResponse.message)
+        console.error(savedResponse)
       }
     } catch (err) {
       console.error(err)

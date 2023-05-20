@@ -16,14 +16,14 @@ const routes = require('./routes')
 const app = express()
 app.use(express.json())
 /* ONLY FOR PRODUCTION */
-app.use(helmet())
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
-app.use(helmet.contentSecurityPolicy({ // Set the CSP policy
-  directives: {
-    defaultSrc: ["'self'"],
-    connectSrc: ["'self'", "http://expirydates.fly.dev"],
-  }
-}))
+// app.use(helmet())
+// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
+// app.use(helmet.contentSecurityPolicy({ // Set the CSP policy
+//   directives: {
+//     defaultSrc: ["'self'"],
+//     connectSrc: ["'self'", "http://expirydates.fly.dev"],
+//   }
+// }))
 // Logs HTTP requests arriving to the server in the console
 app.use(morgan("common"))
 app.use(bodyParser.json({ limit: "30mb", extended: true }))

@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   mode: 'light',
-  page: '',
+  page: 'home',
   products: [],
+  newProduct: false,
   // user: null,
   // token: null,
 };
@@ -21,6 +22,9 @@ const authSlice = createSlice({
     setProducts: (state, action) => {
       state.products = action.payload.products
     },
+    setNewProduct: (state) => {
+      state.newProduct = !state.newProduct
+    },
     // setLogin: (state, action) => {
     //   state.user = action.payload.user
     //   state.token = action.payload.token
@@ -36,6 +40,7 @@ export const {
   setMode,
   setPage,
   setProducts,
+  setNewProduct,
   // setLogin,
   // setLogout,
 } = authSlice.actions;

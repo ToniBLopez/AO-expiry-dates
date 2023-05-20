@@ -2,15 +2,16 @@ import {
   Box,
   useTheme
 } from '@mui/material'
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
-import AddDates from '../widgets/AddDates';
-import Options from '../widgets/Options';
-import { useState, memo, useEffect } from 'react';
-import { batch, useDispatch } from 'react-redux'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
+import HomeIcon from '@mui/icons-material/Home'
+import MenuIcon from '@mui/icons-material/Menu'
+import AddDates from '../widgets/AddDates'
+import Options from '../widgets/Options'
+import { useState, memo, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import getProducts from '../utils/getProducts'
+import { setPage } from '../../state'
 
 const Menu = () => {
   const theme = useTheme()
@@ -19,7 +20,8 @@ const Menu = () => {
   const dispatch = useDispatch()
 
   const goToHome = async () => {
-    await getProducts(batch, dispatch, 'home')
+    dispatch(setPage({ page: 'home' }))
+    await getProducts(dispatch, 'weekly')
   }
 
   useEffect(() => {
@@ -87,7 +89,7 @@ const Menu = () => {
 
       {addDates
         &&
-        <AddDates/>
+        <AddDates />
       }
       <Box
         onClick={() => setAddDates(!addDates)}

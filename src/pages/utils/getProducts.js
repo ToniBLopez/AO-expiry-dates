@@ -1,25 +1,15 @@
-import { setPage, setProducts } from '../../state'
+import { setProducts } from '../../state'
 
-const getProducts = async (batch, dispatch, page) => {
-  let selectedData;
-  switch (page) {
-    case 'home':
-      selectedData = 'weekly'
-      break;
-    case 'all':
-      selectedData = 'all'
-      break;
+const getProducts = async (dispatch, selectedData) => {
+
+  switch (selectedData) {
     case 'not done':
       selectedData = 'notDone'
       break;
-    case 'done':
-      selectedData = 'done'
-      break;
   }
-
   try {
     const datesResponse = await fetch(
-      `http://expirydates.fly.dev/products/${selectedData}`,
+      `http://localhost:8080/products/${selectedData}`,
       {
         method: 'GET'
       }
@@ -36,10 +26,7 @@ const getProducts = async (batch, dispatch, page) => {
         return acc
       }, {})
       console.log(dataGroupedByDate)
-      batch(() => {
-        dispatch(setPage({ page }))
-        dispatch(setProducts({ products: dataGroupedByDate }))
-      })
+      dispatch(setProducts({ products: dataGroupedByDate }))
     } else {
       console.error(savedDatesResponse.message)
     }

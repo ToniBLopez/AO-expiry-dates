@@ -3,8 +3,8 @@ import {
   Button,
   useTheme
 } from "@mui/material"
-import getProducts from "../utils/getProducts"
-import { batch, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { setPage } from "../../state"
 
 const Options = () => {
   const theme = useTheme()
@@ -15,7 +15,7 @@ const Options = () => {
       <Button
         key={text}
         onClick={async () => {
-          await getProducts(batch, dispatch, text)
+          dispatch(setPage({ page: text }))
         }}
         variant='contained'
         sx={{
@@ -34,7 +34,7 @@ const Options = () => {
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
-        bottom: '100px',
+        bottom: '110px',
         right: '40px',
         width: '150px',
         justifyContent: 'space-between',
