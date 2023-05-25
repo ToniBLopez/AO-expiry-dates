@@ -23,12 +23,14 @@ const productsCollection = {
       const today = new Date()
       const weekStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString()
       const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toISOString()
-      const productsData = await Product.find({
-        expiryDate: {
-          $gte: weekStartDate,
-          $lte: weekEndDate
-        }
-      })
+      const productsData = await Product
+        .find({
+          expiryDate: {
+            $gte: weekStartDate,
+            $lte: weekEndDate
+          }
+        })
+        .sort({ expiryDate: 1 })
       console.log(productsData)
       res.status(200).json(productsData)
     } catch (err) {

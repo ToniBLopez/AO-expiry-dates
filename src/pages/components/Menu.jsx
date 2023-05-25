@@ -1,5 +1,6 @@
 import {
   Box,
+  IconButton,
   useTheme
 } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
@@ -8,45 +9,49 @@ import HomeIcon from '@mui/icons-material/Home'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddDates from '../widgets/AddDates'
 import Options from '../widgets/Options'
-import { useState, memo, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import getProducts from '../utils/getProducts'
+import { useState, memo, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { setPage } from '../../state'
 
 const Menu = () => {
   const theme = useTheme()
-  const [addDates, setAddDates] = useState(false)
-  const [chooseAnOption, setChooseAnOption] = useState(false)
+  const boxRef = useRef(null)
+  const { page } = useSelector(state => state)
+  const [isAddDatesOpen, setIsAddDatesOpen] = useState(false)
+  const [isChooseAnOptionOpen, setIsChooseAnOptionOpen] = useState(false)
   const dispatch = useDispatch()
 
-  const goToHome = async () => {
-    dispatch(setPage({ page: 'home' }))
-    await getProducts(dispatch, 'weekly')
-  }
+  useEffect(() => {
+    if (isAddDatesOpen) {
+      setIsChooseAnOptionOpen(false)
+    } else if (isChooseAnOptionOpen) {
+      setIsAddDatesOpen(false)
+    }
+  }, [isAddDatesOpen, isChooseAnOptionOpen])
 
   useEffect(() => {
-    if (addDates) {
-      setChooseAnOption(false)
+    const handleClickOutside = (event) => {
+      if (boxRef.current && !boxRef.current.contains(event.target)) {
+        console.log('inside no click BottomMenu')
+        setIsChooseAnOptionOpen(false)
+      }
     }
-
-  }, [addDates])
-
-  useEffect(() => {
-    if (chooseAnOption) {
-      setAddDates(false)
+    document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
     }
-
-  }, [chooseAnOption])
+  }, [])
 
   return (
     <Box
+      ref={boxRef}
       sx={{
         display: 'flex',
         zIndex: 10,
         justifyContent: 'center'
       }}
     >
-      {chooseAnOption
+      {isChooseAnOptionOpen
         &&
         <Options />
       }
@@ -63,40 +68,76 @@ const Menu = () => {
           alignContent: 'center',
         }}
       >
-        <HomeIcon
-          onClick={goToHome}
-          sx={{
-            fontSize: 35,
-            color: theme.palette.background.default,
-            "&:hover": {
-              cursor: "pointer",
+        <IconButton
+          onClick={() => {
+            dispatch(setPage({ page: 'home' }))
+            if (isChooseAnOptionOpen) {
+              setIsChooseAnOptionOpen(false)
+            } else if (isAddDatesOpen) {
+              setIsAddDatesOpen(false)
             }
           }}
-        />
+          sx={{
+            justifySelf: 'start',
+          }}
+        >
+          <HomeIcon
+            sx={{
+              fontSize: 35,
+              color: page === 'home' && !isChooseAnOptionOpen && !isAddDatesOpen ? theme.palette.selected.default : theme.palette.background.default,
+              "&:hover": {
+                cursor: "pointer",
+              }
+            }}
+          />
+        </IconButton>
 
-        <MenuIcon
-          onClick={() => setChooseAnOption(!chooseAnOption)}
-          sx={{
-            fontSize: 35,
-            color: chooseAnOption ? theme.palette.selected.default : theme.palette.background.default,
-            justifySelf: 'end',
-            "&:hover": {
-              cursor: "pointer",
+        <IconButton
+          onClick={() => {
+            switch (isAddDatesOpen) {
+              case true:
+                setIsAddDatesOpen(false)
+                setIsChooseAnOptionOpen(true)
+                break;
+              case false:
+                setIsChooseAnOptionOpen(!isChooseAnOptionOpen)
+                break;
             }
           }}
-        />
+          sx={{
+            justifySelf: 'end',
+          }}
+        >
+          <MenuIcon
+            sx={{
+              fontSize: 35,
+              color: isChooseAnOptionOpen || ['all', 'done', 'not done'].includes(page) && !isAddDatesOpen ? theme.palette.selected.default : theme.palette.background.default,
+              "&:hover": {
+                cursor: "pointer",
+              }
+            }}
+          />
+        </IconButton>
       </Box>
 
-      {addDates
+      {isAddDatesOpen
         &&
         <AddDates />
       }
-      <Box
-        onClick={() => setAddDates(!addDates)}
+      <IconButton
+        onClick={() => {
+          switch (isChooseAnOptionOpen) {
+            case true:
+              setIsChooseAnOptionOpen(false)
+              setIsAddDatesOpen(true)
+              break;
+            case false:
+              setIsAddDatesOpen(!isAddDatesOpen)
+              break;
+          }
+        }}
         sx={{
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
           position: 'fixed',
           bottom: '40px',
           boxShadow: '0px 4px 10px -5px black',
@@ -106,27 +147,36 @@ const Menu = () => {
           backgroundColor: theme.palette.secondary.main,
           "&:hover": {
             cursor: "pointer",
+            backgroundColor: theme.palette.secondary.main,
           }
         }}
       >
-        {addDates
-          ?
-          <RemoveCircleIcon
-            sx={{
-              fontSize: 35,
-              // color: 'white',
-              color: theme.palette.selected.default,
-            }}
-          />
-          :
-          <AddCircleIcon
-            sx={{
-              fontSize: 35,
-              color: 'white',
-            }}
-          />
-        }
-      </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {isAddDatesOpen
+            ?
+            <RemoveCircleIcon
+              sx={{
+                fontSize: 35,
+                // color: 'white',
+                color: theme.palette.selected.default,
+              }}
+            />
+            :
+            <AddCircleIcon
+              sx={{
+                fontSize: 35,
+                color: 'white',
+              }}
+            />
+          }
+        </Box>
+      </IconButton>
     </Box>
   )
 }

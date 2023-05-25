@@ -3,12 +3,13 @@ import {
   Button,
   useTheme
 } from "@mui/material"
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setPage } from "../../state"
 
 const Options = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
+  const { page } = useSelector(state => state)
 
   const renderButton = (text, marginBottom) => {
     return (
@@ -20,7 +21,12 @@ const Options = () => {
         variant='contained'
         sx={{
           mb: marginBottom,
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          backgroundColor: page === text ? theme.palette.selected.default : theme.palette.primary.main,
+          "&:hover": {
+            // backgroundColor: theme.palette.primary.dark (DESKTOP)
+            backgroundColor: theme.palette.selected.default //MOBILE
+          }
         }}
       >
         {text}
