@@ -4,20 +4,14 @@ import {
   Button,
   useTheme
 } from "@mui/material"
-import {
-  useEffect,
-  useState,
-  memo
-} from "react"
-import { useSelector, batch, useDispatch } from 'react-redux'
+import { memo } from "react"
+import { useDispatch } from 'react-redux'
 import { setNewProduct } from "../../state"
 // import { useFormik } from 'formik'
 
 const AddDates = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  let nameId;
-  let expiryDateId;
 
   // const onSubmit = async (values, actions) => isLogin
   //   ? await login(values, actions)
@@ -39,11 +33,11 @@ const AddDates = () => {
 
   const createOne = async () => {
     try {
-      nameId = document.getElementById('nameId').value
-      expiryDateId = document.getElementById('expiryDateId').value
+      const nameId = document.getElementById('nameId').value
+      const expiryDateId = document.getElementById('expiryDateId').value
       /* CREATE */
       const response = await fetch(
-        'http://localhost:8080/products/createOne',
+        'http://expirydates.fly.dev/products/createOne',
         {
           method: 'POST',
           headers: {
@@ -121,7 +115,10 @@ const AddDates = () => {
         variant='contained'
         onClick={createOne}
         sx={{
-          fontWeight: 'bold'
+          fontWeight: 'bold',
+          "&:hover": {
+            backgroundColor: theme.palette.selected.default
+          }
         }}
       >
         Send

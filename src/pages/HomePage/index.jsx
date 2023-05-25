@@ -36,7 +36,7 @@ const index = () => {
     const productsData = async () => {
       try {
         const datesResponse = await fetch(
-          `http://localhost:8080/products/${selectedData}`,
+          `http://expirydates.fly.dev/products/${selectedData}`,
           {
             method: 'GET'
           }
@@ -86,7 +86,7 @@ const index = () => {
       const updateCheck = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/products/updateDone`,
+            `http://expirydates.fly.dev/products/updateDone`,
             {
               method: 'PATCH',
               headers: {
