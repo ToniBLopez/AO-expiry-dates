@@ -12,6 +12,8 @@ import { setNewProduct } from "../../state"
 const AddDates = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
+  let nameId;
+  let expiryDateId;
 
   // const onSubmit = async (values, actions) => isLogin
   //   ? await login(values, actions)
