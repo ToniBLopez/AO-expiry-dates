@@ -2,9 +2,9 @@
 export const colorTokens = {
   grey: {
     0: "#FFFFFF",
-    // NEW
-    // 10: "#E0D8D1",
     10: "#F6F6F6",
+    20: '#efedeb',
+    30: "#E0D8D1", // NEW
     50: "#F0F0F0",
     100: "#E0E0E0",
     200: "#C2C2C2",
@@ -94,6 +94,7 @@ export const themeSettings = (mode) => {
           },
           background: {
             default: colorTokens.grey[10],
+            selected: colorTokens.grey[20],
             alt: colorTokens.grey[0],
           },
         }),
@@ -102,7 +103,7 @@ export const themeSettings = (mode) => {
       fontFamily: ["Rubik", "sans-serif"].join(","),
       fontSize: 12,
       h1: {
-        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontFamily: ['Merienda', 'cursive'].join(","),
         fontSize: 40,
       },
       h2: {

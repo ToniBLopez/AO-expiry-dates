@@ -18,7 +18,7 @@ import {
 } from "redux-persist";
 
 /* REDUX STORAGE CONFIGURATION */
-const persistConfig = { key: "root", storage, version: 1 };
+const persistConfig = { key: "root", storage, version: 1 }
 const persistedReducer = persistReducer(persistConfig, authReducer)
 const store = configureStore({
   reducer: persistedReducer,

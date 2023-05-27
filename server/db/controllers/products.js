@@ -12,7 +12,7 @@ const productsCollection = {
         name,
         expiryDate: isoString,
       })
-      console.log(product)
+      console.log('Product added successfully')
       res.status(200).json(product)
     } catch (err) {
       res.status(500).json(err.message)
@@ -31,7 +31,7 @@ const productsCollection = {
           }
         })
         .sort({ expiryDate: 1 })
-      console.log(productsData)
+      console.log('Products obtained successfully, page: Home')
       res.status(200).json(productsData)
     } catch (err) {
       console.err(err)
@@ -41,7 +41,7 @@ const productsCollection = {
   getAllProducts: async (res) => {
     try {
       const productsData = await Product.find().sort({ expiryDate: 1 })
-      console.log(productsData)
+      console.log('Products obtained successfully, page: All')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -50,7 +50,7 @@ const productsCollection = {
   getNotDoneProducts: async (res) => {
     try {
       const productsData = await Product.find({ done: false }).sort({ expiryDate: 1 })
-      console.log(productsData)
+      console.log('Products obtained successfully, page: Not Done')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -59,7 +59,7 @@ const productsCollection = {
   getDoneProducts: async (res) => {
     try {
       const productsData = await Product.find({ done: true }).sort({ expiryDate: 1 })
-      console.log(productsData)
+      console.log('Products obtained successfully, page: Done')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -74,7 +74,7 @@ const productsCollection = {
       }
       const product = await Product.findById(productId)
       if (!product) {
-        console.log('Aquí está el error')
+        console.log('Product not found in: updateProductDone')
         return res.status(404).json({ message: 'Product not found' })
       }
       product.done = !product.done
@@ -83,6 +83,17 @@ const productsCollection = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error updating the product' })
+    }
+  },
+  deleteAProduct: async (req, res) => {
+    try {
+      const { productId } = req.body
+      const result = await Product.deleteOne({ _id: productId })
+      console.log(`${result.deletedCount} document successfully deleted`)
+      res.status(200).json({ message: `${result.deletedCount} document successfully deleted` })
+    } catch (err) {
+      console.error('Error deleting document:', err)
+      res.status(500).json({ err })
     }
   },
   deleteAllProducts: async (res) => {

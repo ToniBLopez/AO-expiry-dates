@@ -160,7 +160,7 @@ const Menu = () => {
         >
           {isAddDatesOpen
             ?
-            <RemoveCircleIcon
+            <RemoveCircleIcon // Puede ser la propiedad que no forma parte de Menu
               sx={{
                 fontSize: 35,
                 // color: 'white',
@@ -168,7 +168,7 @@ const Menu = () => {
               }}
             />
             :
-            <AddCircleIcon
+            <AddCircleIcon // Puede ser la propiedad que no forma parte de Menu
               sx={{
                 fontSize: 35,
                 color: 'white',

@@ -9,7 +9,8 @@ const getProducts = async (dispatch, selectedData) => {
   }
   try {
     const datesResponse = await fetch(
-      `http://expirydates.fly.dev/products/${selectedData}`,
+      // `http://expirydates.fly.dev/products/${selectedData}`,
+      `http://localhost:8080/products/${selectedData}`,
       {
         method: 'GET'
       }

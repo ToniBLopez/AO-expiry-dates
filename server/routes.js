@@ -5,6 +5,7 @@ const {
   getNotDoneProducts,
   getDoneProducts,
   updateProductDone,
+  deleteAProduct,
   deleteAllProducts
 } = require('./db/controllers/products')
 
@@ -27,6 +28,9 @@ module.exports = {
     })
     app.patch('/products/updateDone', (req, res) => {
       updateProductDone(req, res)
+    })
+    app.delete('/products/deleteOne', (req, res) => {
+      deleteAProduct(req, res)
     })
     app.delete('/products/deleteAll', (req, res) => {
       deleteAllProducts(res)

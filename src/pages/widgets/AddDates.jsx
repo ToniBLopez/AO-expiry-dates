@@ -12,8 +12,6 @@ import { setNewProduct } from "../../state"
 const AddDates = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
-  let nameId;
-  let expiryDateId;
 
   // const onSubmit = async (values, actions) => isLogin
   //   ? await login(values, actions)
@@ -39,7 +37,8 @@ const AddDates = () => {
       const expiryDateId = document.getElementById('expiryDateId').value
       /* CREATE */
       const response = await fetch(
-        'http://expirydates.fly.dev/products/createOne',
+        // 'http://expirydates.fly.dev/products/createOne',
+        'http://localhost:8080/products/createOne',
         {
           method: 'POST',
           headers: {
