@@ -45,8 +45,8 @@ const index = () => {
   const productsData = async (dataRequest) => {
     try {
       const datesResponse = await fetch(
-        // `http://expirydates.fly.dev/products/${dataRequest}`,
-        `http://localhost:8080/products/${dataRequest}`,
+        // `http://localhost:8080/products/${dataRequest}`,
+        `http://expirydates.fly.dev/products/${dataRequest}`,
         {
           method: 'GET'
         }
@@ -82,8 +82,8 @@ const index = () => {
   const removeProduct = async () => {
     try {
       const datesResponse = await fetch(
-        // 'http://expirydates.fly.dev/products/deleteOne',
-        'http://localhost:8080/products/deleteOne',
+        // 'http://localhost:8080/products/deleteOne',
+        'http://expirydates.fly.dev/products/deleteOne',
         {
           method: 'DELETE',
           headers: {
@@ -127,8 +127,8 @@ const index = () => {
       const updateCheck = async () => {
         try {
           const response = await fetch(
-            // `http://expirydates.fly.dev/products/updateDone`,
-            `http://localhost:8080/products/updateDone`,
+            // `http://localhost:8080/products/updateDone`,
+            `http://expirydates.fly.dev/products/updateDone`,
             {
               method: 'PATCH',
               headers: {
