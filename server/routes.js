@@ -8,8 +8,16 @@ const {
   deleteAProduct,
   deleteAllProducts
 } = require('./db/controllers/products')
+const {
+  login,
+} = require('./db/controllers/auth')
 
 module.exports = {
+  login: (app) => {
+    app.post('/login', (req, res) => {
+      login(req, res)
+    })
+  },
   products: (app) => {
     app.post('/products/createOne', (req, res) => {
       postProduct(req, res)

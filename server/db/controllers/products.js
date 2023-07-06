@@ -13,9 +13,12 @@ const productsCollection = {
         expiryDate: isoString,
       })
       console.log('Product added successfully')
-      res.status(200).json(product)
+      res.status(200).json({ product: product, message: 'Product added successfully'})
     } catch (err) {
-      res.status(500).json(err.message)
+      console.log('err')
+      console.log(err)
+      console.log(err.error)
+      res.status(500).json({ error: err, message: err.message })
     }
   },
   getWeeklyProducts: async (res) => {
@@ -90,10 +93,10 @@ const productsCollection = {
       const { productId } = req.body
       const result = await Product.deleteOne({ _id: productId })
       console.log(`${result.deletedCount} document successfully deleted`)
-      res.status(200).json({ message: `${result.deletedCount} document successfully deleted` })
+      res.status(200).json({ result: result, message: `Document successfully deleted` })
     } catch (err) {
       console.error('Error deleting document:', err)
-      res.status(500).json({ err })
+      res.status(500).json({ err, message: err.message })
     }
   },
   deleteAllProducts: async (res) => {

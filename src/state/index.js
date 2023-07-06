@@ -5,8 +5,12 @@ const initialState = {
   page: 'home',
   products: [],
   newProduct: false,
-  // user: null,
-  // token: null,
+  messageAlert: {
+    type: '',
+    message: '',
+  },
+  store: null,
+  token: null,
 };
 
 const authSlice = createSlice({
@@ -25,14 +29,18 @@ const authSlice = createSlice({
     setNewProduct: (state) => {
       state.newProduct = !state.newProduct
     },
-    // setLogin: (state, action) => {
-    //   state.user = action.payload.user
-    //   state.token = action.payload.token
-    // },
-    // setLogout: (state) => {
-    //   state.user = null
-    //   state.token = null
-    // },
+    setMessageAlert: (state, action) => {
+      state.messageAlert.type = action.payload.type
+      state.messageAlert.message = action.payload.message
+    },
+    setLogin: (state, action) => {
+      state.store = action.payload.store
+      state.token = action.payload.token
+    },
+    setLogout: (state) => {
+      state.store = null
+      state.token = null
+    },
   }
 })
 
@@ -41,7 +49,8 @@ export const {
   setPage,
   setProducts,
   setNewProduct,
-  // setLogin,
-  // setLogout,
+  setMessageAlert,
+  setLogin,
+  setLogout,
 } = authSlice.actions;
 export default authSlice.reducer;

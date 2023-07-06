@@ -4,20 +4,29 @@ import {
   Typography,
   IconButton,
   useTheme,
+  Snackbar,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSnackbar } from 'notistack'
 import Header from '../components/Header'
 import Menu from '../components/Menu'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState, memo } from 'react'
+import { setMessageAlert } from '../../state';
 
 const index = () => {
   console.log('renders')
+  const dispatch = useDispatch()
   const theme = useTheme()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+  const { page, newProduct, messageAlert } = useSelector(state => state)
+  const { enqueueSnackbar } = useSnackbar()
+
   const [products, setProducts] = useState({})
   const [productDone, setProductDone] = useState({})
+  const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [clickOnCheck, setClickOnCheck] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
@@ -29,7 +38,10 @@ const index = () => {
     _id: '',
     state: false
   })
-  const { page, newProduct } = useSelector(state => state)
+
+  const showSnackbar = (type, response) => {
+    dispatch(setMessageAlert({ type, message: response.message }))
+  }
 
   const dataToRequest = () => {
     switch (page) {
@@ -42,11 +54,11 @@ const index = () => {
     }
   }
 
-  const productsData = async (dataRequest) => {
+  const getProductsData = async (dataRequest) => {
     try {
       const datesResponse = await fetch(
-        // `http://localhost:8080/products/${dataRequest}`,
-        `http://expirydates.fly.dev/products/${dataRequest}`,
+        `http://localhost:8080/products/${dataRequest}`,
+        // `http://expirydates.fly.dev/products/${dataRequest}`,
         {
           method: 'GET'
         }
@@ -82,8 +94,8 @@ const index = () => {
   const removeProduct = async () => {
     try {
       const datesResponse = await fetch(
-        // 'http://localhost:8080/products/deleteOne',
-        'http://expirydates.fly.dev/products/deleteOne',
+        'http://localhost:8080/products/deleteOne',
+        // 'http://expirydates.fly.dev/products/deleteOne',
         {
           method: 'DELETE',
           headers: {
@@ -96,20 +108,23 @@ const index = () => {
       )
       const savedDatesResponse = await datesResponse.json()
       if (datesResponse.ok) {
+        showSnackbar('success', savedDatesResponse)
         console.log(savedDatesResponse)
         const dataRequest = dataToRequest()
-        productsData(dataRequest)
+        getProductsData(dataRequest)
       } else {
+        showSnackbar('error', savedDatesResponse)
         console.error(savedDatesResponse)
       }
     } catch (err) {
+      showSnackbar('error', { message: 'Something went wrong' })
       console.error(err)
     }
   }
 
   useEffect(() => {
     const dataRequest = dataToRequest()
-    productsData(dataRequest)
+    getProductsData(dataRequest)
   }, [page, newProduct])
 
   const isCheck = (_id) => {
@@ -127,8 +142,8 @@ const index = () => {
       const updateCheck = async () => {
         try {
           const response = await fetch(
-            // `http://localhost:8080/products/updateDone`,
-            `http://expirydates.fly.dev/products/updateDone`,
+            `http://localhost:8080/products/updateDone`,
+            // `http://expirydates.fly.dev/products/updateDone`,
             {
               method: 'PATCH',
               headers: {
@@ -162,9 +177,30 @@ const index = () => {
     }
   }, [confirmDeletion])
 
+  useEffect(() => {
+    if (messageAlert.type.length !== 0) {
+      enqueueSnackbar(messageAlert.message, {
+        variant: messageAlert.type,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        },
+      })
+
+      dispatch(setMessageAlert({ type: '', message: '' }))
+    }
+  }, [messageAlert])
+
   return (
     <Box>
+      <Snackbar
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+      </Snackbar>
+
       <Header />
+
       <Box
         sx={{
           width: '100%',
@@ -205,11 +241,27 @@ const index = () => {
               justifySelf: 'end',
             }}
           >
-            <EditIcon
-              sx={{
-                color: theme.palette.primary.main,
-              }}
-            />
+            {
+              isEdit
+                ? (
+                  <ArrowDropDownIcon
+                    fontSize='large'
+                    sx={{
+                      // color: theme.palette.primary.main,
+                      color: theme.palette.selected.default,
+                      transition: 'ease-in-out'
+                    }}
+                  />
+                )
+                : (
+                  <EditIcon
+                    sx={{
+                      color: theme.palette.primary.main,
+                      transition: 'ease-in-out',
+                    }}
+                  />
+                )
+            }
           </IconButton>
         </Box>
         {loading

@@ -2,55 +2,49 @@ const { Schema, model } = require('mongoose')
 
 // Definir el esquema del documento
 const productSchema = new Schema({
-  // name: String,
   name: {
     type: String,
     required: true
   },
-  // expiryDate: String,
   expiryDate: {
     type: String,
     required: true,
-    minLength: 10,
-    // maxLength: 10,
-    // validate: {
-    //   validator: value => {
-    //     // Comprobar que la fecha está en el formato correcto
-    //     if (!/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
-    //       return false;
-    //     }
-
-    //     const [day, month, year] = value.split('.');
-    //     const numericDay = Number(day);
-    //     const numericMonth = Number(month);
-    //     const numericYear = Number(year);
-
-    //     // Comprobar que el día, mes y año son válidos
-    //     if (
-    //       numericDay < 1 || numericDay > 31 ||
-    //       numericMonth < 1 || numericMonth > 12 ||
-    //       numericYear < 2023 || numericYear > 2150
-    //     ) {
-    //       return false;
-    //     }
-
-    //     return true;
-    //   },
-    //   message: props => `${props.value} no es una fecha de expiración válida, debe estar separado por puntos y no exceder la cantidad de días (31) y meses (12) `
-    // }
+    minLength: [10, 'Expiry date must have 10 characters'],
+    validate: {
+      validator: value => {
+        const date = new Date(value)
+        // Realizar operaciones con la fecha
+        const day = String(date.getDate()).padStart(2, '0') // Obtener el día con 2 números
+        const month = String(date.getMonth() + 1).padStart(2, '0') // Obtener el mes con 2 números
+        const year = date.getFullYear() // Obtener el año
+        const validDate = `${day}.${month}.${year}`
+        if (!/^\d{2}\.\d{2}\.\d{4}$/.test(validDate)) {
+          return false
+        }
+        if (
+          day < 1 || day > 31 ||
+          month < 1 || month > 12 ||
+          year < 2023 || year > 3000
+        ) {
+          return false
+        }
+        return true
+      },
+      message: () => `No es una fecha de expiración válida`
+    }
   },
   done: {
     type: Boolean,
-    default: false
+    default: false,
   },
   createdAt: {
     type: Date,
     immutable: true,
-    default: () => Date.now()
+    default: () => Date.now(),
   },
   updatedAt: {
     type: Date,
-    default: () => Date.now()
+    default: () => Date.now(),
   },
 }, {
   collection: 'productsExpiration'
