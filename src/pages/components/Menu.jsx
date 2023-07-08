@@ -30,9 +30,9 @@ const Menu = () => {
   }, [isAddDatesOpen, isChooseAnOptionOpen])
 
   useEffect(() => {
+    /* WHEN NO CLICK IN BottomMenu */
     const handleClickOutside = (event) => {
       if (boxRef.current && !boxRef.current.contains(event.target)) {
-        console.log('inside no click BottomMenu')
         setIsChooseAnOptionOpen(false)
       }
     }

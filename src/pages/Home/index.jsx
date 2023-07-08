@@ -17,7 +17,9 @@ import { useEffect, useState, memo } from 'react'
 import { setMessageAlert } from '../../state';
 
 const index = () => {
+  /* CONTROL THE NUMBER OF RENDERS */
   console.log('renders')
+
   const dispatch = useDispatch()
   const theme = useTheme()
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
@@ -54,7 +56,7 @@ const index = () => {
     }
   }
 
-  const getProductsData = async (dataRequest) => {
+  const getProductsData = async (dataRequest, updateDone = true) => {
     try {
       const datesResponse = await fetch(
         `http://localhost:8080/products/${dataRequest}`,
@@ -75,14 +77,16 @@ const index = () => {
           return acc
         }, {})
         setProducts(dataGroupedByDate)
-        const initialDoneState = {}
-        Object.keys(dataGroupedByDate).forEach(date => {
-          dataGroupedByDate[date].forEach(product => {
-            initialDoneState[product._id] = product.done
+        if (updateDone) {
+          const initialDoneState = {}
+          Object.keys(dataGroupedByDate).forEach(date => {
+            dataGroupedByDate[date].forEach(product => {
+              initialDoneState[product._id] = product.done
+            })
           })
-        })
-        setProductDone(initialDoneState)
-        setLoading(false)
+          setProductDone(initialDoneState)
+          setLoading(false)
+        }
       } else {
         console.error(savedDatesResponse.message)
       }
@@ -122,10 +126,10 @@ const index = () => {
     }
   }
 
-  useEffect(() => {
+  const updateProducts = () => {
     const dataRequest = dataToRequest()
     getProductsData(dataRequest)
-  }, [page, newProduct])
+  }
 
   const isCheck = (_id) => {
     const updatedProductDone = {
@@ -138,40 +142,45 @@ const index = () => {
   }
 
   useEffect(() => {
-    if (clickOnCheck) {
-      const updateCheck = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:8080/products/updateDone`,
-            // `http://expirydates.fly.dev/products/updateDone`,
-            {
-              method: 'PATCH',
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ productId: productDone['lastUpdatedId'] }),
-            }
-          )
-          const savedResponse = await response.json()
-          if (response.ok) {
-            console.log(savedResponse)
-            setClickOnCheck(false)
-          } else {
-            console.error(savedResponse)
-            setClickOnCheck(false)
+    updateProducts()
+  }, [page, newProduct])
+
+  useEffect(() => {
+    const updateCheck = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:8080/products/updateDone',
+          // 'http://expirydates.fly.dev/products/updateDone',
+          {
+            method: 'PATCH',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId: productDone['lastUpdatedId'] }),
           }
-        } catch (err) {
-          console.error(err)
+        )
+        const savedResponse = await response.json()
+        if (response.ok) {
+          console.log(savedResponse)
+          updateProducts()
+          setClickOnCheck(false)
+        } else {
+          console.error(savedResponse)
           setClickOnCheck(false)
         }
+      } catch (err) {
+        console.error(err)
+        setClickOnCheck(false)
       }
+    }
+
+    if (clickOnCheck) {
       updateCheck()
     }
   }, [productDone])
 
   useEffect(() => {
     if (confirmDeletion.state) {
-      console.log('Iniside Confim Deletion')
       console.log(confirmDeletion._id)
       removeProduct()
     }
