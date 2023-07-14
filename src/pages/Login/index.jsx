@@ -1,17 +1,24 @@
 import { Box, Button, TextField, useTheme } from '@mui/material'
-import { useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { setLogin } from '../../state'
+import { useRef, useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setLogin, setMessageAlert } from '../../state'
+import { useSnackbar } from 'notistack'
 
 const index = () => {
-  const { palette } = useTheme()
   console.log('iteración')
+  const dispatch = useDispatch()
+  const { palette } = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
+  const { messageAlert } = useSelector(state => state)
   const formRef = useRef(null)
+
+  const showSnackbar = (type, response) => {
+    dispatch(setMessageAlert({ type, message: response.message }))
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
     login()
-
     if (formRef.current) {
       formRef.current.reset()
     }
@@ -19,7 +26,7 @@ const index = () => {
 
   const login = async () => {
     try {
-      const store = document.getElementById('store').value
+      const storeValue = document.getElementById('store').value
 
       const response = await fetch(
         'http://localhost:8080/login',
@@ -27,33 +34,48 @@ const index = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            store,
-          })
+          body: JSON.stringify({ store: storeValue }),
         }
       )
-      loggedIn = await response.json()
-      console.log(loggedIn)
-      console.log(response.ok)
+      const loggedIn = await response.json()
+
       if (response.ok) {
-        // dispatch(
-        //   setLogin({
-        //     store: loggedIn.store,
-        //     token: loggedIn.token,
-        //   })
-        // )
+        console.log(loggedIn.storeId)
+        console.log(typeof (loggedIn.storeId)) // String
+        showSnackbar('success', loggedIn)
+        // dispatch(setLogin({ storeId: 'hi', number: storeValue, token: null }))
+        // dispatch((dispatch) => {
+        //   dispatch(setLogin({ storeId: loggedIn.storeId, number: storeValue, token: null }))
+        //   dispatch(setMessageAlert({ type: 'success', message: loggedIn.message }))
+        // })
         // navigate('/home')
       } else {
         /* Handle incorrect store */
         // if (loggedIn.error) {
         //   errors.store = 'Incorrect store number'
         // }
+        showSnackbar('error', loggedIn)
         console.error(loggedIn)
       }
     } catch (error) {
+      showSnackbar('error', { message: 'Something went wrong' })
       console.error(error)
     }
   }
+
+  useEffect(() => {
+    if (messageAlert.type.length !== 0) {
+      enqueueSnackbar(messageAlert.message, {
+        variant: messageAlert.type,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        },
+      })
+
+      dispatch(setMessageAlert({ type: '', message: '' }))
+    }
+  }, [messageAlert])
 
   return (
     <form

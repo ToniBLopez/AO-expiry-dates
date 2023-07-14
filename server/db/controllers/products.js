@@ -13,7 +13,7 @@ const productsCollection = {
         expiryDate: isoString,
       })
       console.log('Product added successfully')
-      res.status(200).json({ product: product, message: 'Product added successfully'})
+      res.status(200).json({ product: product, message: 'Product added successfully' })
     } catch (err) {
       console.log('err')
       console.log(err)
@@ -28,10 +28,17 @@ const productsCollection = {
       const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toISOString()
       const productsData = await Product
         .find({
-          expiryDate: {
-            $gte: weekStartDate,
-            $lte: weekEndDate
-          }
+          $and: [
+            {
+              expiryDate: {
+                $gte: weekStartDate,
+                $lte: weekEndDate
+              }
+            },
+            {
+              done: false
+            },
+          ]
         })
         .sort({ expiryDate: 1 })
       console.log('Products obtained successfully, page: Home')
@@ -70,8 +77,7 @@ const productsCollection = {
   },
   updateProductDone: async (req, res) => {
     try {
-      const { productId } = req.body
-      console.log(`Soy ID: ${productId}`)
+      const { productId, page } = req.body
       if (!mongoose.Types.ObjectId.isValid(productId)) {
         return res.status(400).json({ message: 'Invalid product ID' });
       }
@@ -82,9 +88,46 @@ const productsCollection = {
       }
       product.done = !product.done
       await product.save()
-      res.status(200).json({ message: 'Update successful' })
+
+      let productsData
+      try {
+        console.log('page')
+        console.log(page)
+        switch (page) {
+          case 'home':
+            const today = new Date()
+            const weekStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString()
+            const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toISOString()
+            productsData = await Product
+              .find({
+                expiryDate: {
+                  $gte: weekStartDate,
+                  $lte: weekEndDate
+                }
+              })
+              .sort({ expiryDate: 1 })
+            console.log('Products obtained successfully. Page: Home')
+            break;
+          case 'all':
+            productsData = await Product.find().sort({ expiryDate: 1 })
+            console.log('Products obtained successfully. Page: All')
+            break;
+          case 'done':
+            productsData = await Product.find({ done: true }).sort({ expiryDate: 1 })
+            console.log('Products obtained successfully. Page: Done')
+            break;
+          case 'not done':
+            productsData = await Product.find({ done: false }).sort({ expiryDate: 1 })
+            console.log('Products obtained successfully. Page: Not Done')
+            break;
+        }
+        res.status(200).json({ message: 'Update successful', products: productsData, })
+      } catch (err) {
+        console.error(err)
+        res.status(500).json({ message: err.message })
+      }
     } catch (error) {
-      console.error(error);
+      console.error(error)
       res.status(500).json({ message: 'Error updating the product' })
     }
   },

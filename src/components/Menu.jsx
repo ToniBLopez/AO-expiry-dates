@@ -11,7 +11,7 @@ import AddDates from '../widgets/AddDates'
 import Options from '../widgets/Options'
 import { useState, memo, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setPage } from '../../state'
+import { setPage } from '../state'
 
 const Menu = () => {
   const theme = useTheme()

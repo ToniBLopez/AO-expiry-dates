@@ -7,7 +7,7 @@ import {
 import { memo, useRef } from "react"
 import { useDispatch } from 'react-redux'
 // import { useFormik } from 'formik'
-import { setNewProduct, setMessageAlert } from "../../state"
+import { setNewProduct, setMessageAlert } from "../state"
 
 const AddDates = () => {
   const theme = useTheme()

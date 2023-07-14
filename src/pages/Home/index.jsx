@@ -6,28 +6,27 @@ import {
   useTheme,
   Snackbar,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { useSnackbar } from 'notistack'
-import Header from '../components/Header'
-import Menu from '../components/Menu'
+import Header from '../../components/Header'
+import Menu from '../../components/Menu'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState, memo } from 'react'
-import { setMessageAlert } from '../../state';
+import { setMessageAlert, setProductsHaveDone } from '../../state'
+import getProductsData from '../../utils/requests/GET'
+import updateCheck from '../../utils/requests/UPDATE'
+import removeProduct from '../../utils/requests/REMOVE'
 
 const index = () => {
   /* CONTROL THE NUMBER OF RENDERS */
   console.log('renders')
-
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+  const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const theme = useTheme()
-  const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
-  const { page, newProduct, messageAlert } = useSelector(state => state)
-  const { enqueueSnackbar } = useSnackbar()
-
-  const [products, setProducts] = useState({})
-  const [productDone, setProductDone] = useState({})
+  const { page, newProduct, messageAlert, products, productsHaveDone } = useSelector(state => state)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [clickOnCheck, setClickOnCheck] = useState(false)
@@ -44,7 +43,6 @@ const index = () => {
   const showSnackbar = (type, response) => {
     dispatch(setMessageAlert({ type, message: response.message }))
   }
-
   const dataToRequest = () => {
     switch (page) {
       case 'home':
@@ -55,137 +53,41 @@ const index = () => {
         return page
     }
   }
-
-  const getProductsData = async (dataRequest, updateDone = true) => {
-    try {
-      const datesResponse = await fetch(
-        `http://localhost:8080/products/${dataRequest}`,
-        // `http://expirydates.fly.dev/products/${dataRequest}`,
-        {
-          method: 'GET'
-        }
-      )
-      const savedDatesResponse = await datesResponse.json()
-      if (datesResponse.ok) {
-        const dataGroupedByDate = savedDatesResponse.reduce((acc, obj) => {
-          const date = obj.expiryDate
-          if (!acc[date]) {
-            acc[date] = [obj]
-          } else {
-            acc[date].push(obj)
-          }
-          return acc
-        }, {})
-        setProducts(dataGroupedByDate)
-        if (updateDone) {
-          const initialDoneState = {}
-          Object.keys(dataGroupedByDate).forEach(date => {
-            dataGroupedByDate[date].forEach(product => {
-              initialDoneState[product._id] = product.done
-            })
-          })
-          setProductDone(initialDoneState)
-          setLoading(false)
-        }
-      } else {
-        console.error(savedDatesResponse.message)
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const removeProduct = async () => {
-    try {
-      const datesResponse = await fetch(
-        'http://localhost:8080/products/deleteOne',
-        // 'http://expirydates.fly.dev/products/deleteOne',
-        {
-          method: 'DELETE',
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            productId: confirmDeletion._id,
-          }),
-        }
-      )
-      const savedDatesResponse = await datesResponse.json()
-      if (datesResponse.ok) {
-        showSnackbar('success', savedDatesResponse)
-        console.log(savedDatesResponse)
-        const dataRequest = dataToRequest()
-        getProductsData(dataRequest)
-      } else {
-        showSnackbar('error', savedDatesResponse)
-        console.error(savedDatesResponse)
-      }
-    } catch (err) {
-      showSnackbar('error', { message: 'Something went wrong' })
-      console.error(err)
-    }
-  }
-
   const updateProducts = () => {
     const dataRequest = dataToRequest()
-    getProductsData(dataRequest)
+    getProductsData(dispatch, dataRequest)
+    setLoading(false)
   }
-
   const isCheck = (_id) => {
-    const updatedProductDone = {
-      ...productDone,
-      lastUpdatedId: _id,
-      [_id]: !productDone[_id]
-    }
-    setProductDone(updatedProductDone)
+    dispatch(setProductsHaveDone({
+      productsHaveDone: {
+        ...productsHaveDone,
+        lastUpdatedId: _id,
+        [_id]: !productsHaveDone[_id]
+      }
+    }))
     setClickOnCheck(true)
   }
 
   useEffect(() => {
     updateProducts()
   }, [page, newProduct])
-
   useEffect(() => {
-    const updateCheck = async () => {
-      try {
-        const response = await fetch(
-          'http://localhost:8080/products/updateDone',
-          // 'http://expirydates.fly.dev/products/updateDone',
-          {
-            method: 'PATCH',
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ productId: productDone['lastUpdatedId'] }),
-          }
-        )
-        const savedResponse = await response.json()
-        if (response.ok) {
-          console.log(savedResponse)
-          updateProducts()
-          setClickOnCheck(false)
-        } else {
-          console.error(savedResponse)
-          setClickOnCheck(false)
-        }
-      } catch (err) {
-        console.error(err)
-        setClickOnCheck(false)
-      }
+    if (newProduct) {
+      // Actualizar solo el frontend añadiendo el producto en cuestión
     }
-
-    if (clickOnCheck) {
-      updateCheck()
-    }
-  }, [productDone])
-
+  }, [newProduct])
   useEffect(() => {
     if (confirmDeletion.state) {
       console.log(confirmDeletion._id)
-      removeProduct()
+      removeProduct({
+        dispatch,
+        dataToRequest,
+        confirmDeletion,
+        showSnackbar
+      })
     }
   }, [confirmDeletion])
-
   useEffect(() => {
     if (messageAlert.type.length !== 0) {
       enqueueSnackbar(messageAlert.message, {
@@ -195,10 +97,19 @@ const index = () => {
           horizontal: 'right'
         },
       })
-
       dispatch(setMessageAlert({ type: '', message: '' }))
     }
   }, [messageAlert])
+  useEffect(() => {
+    if (clickOnCheck) {
+      updateCheck({
+        dispatch,
+        productsHaveDone,
+        page,
+      })
+    }
+    setClickOnCheck(false)
+  }, [clickOnCheck])
 
   return (
     <Box>
@@ -323,7 +234,7 @@ const index = () => {
                             }}
                           >
                             <Checkbox
-                              checked={productDone[el._id]}
+                              checked={productsHaveDone[el._id]}
                               onChange={() => isCheck(el._id)}
                               sx={{
                                 zIndex: 0,

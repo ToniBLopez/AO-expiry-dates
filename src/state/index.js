@@ -3,13 +3,19 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   mode: 'light',
   page: 'home',
-  products: [],
+  products: null,
   newProduct: false,
+  productsHaveDone: {
+    lastUpdatedId: ''
+  },
   messageAlert: {
     type: '',
     message: '',
   },
-  store: null,
+  store: {
+    storeId: '',
+    number: null,
+  },
   token: null,
 };
 
@@ -29,16 +35,30 @@ const authSlice = createSlice({
     setNewProduct: (state) => {
       state.newProduct = !state.newProduct
     },
+    // setUpdateDoneInProducts: (state, action) => { // in development...
+    //   // Object.values(state.products).forEach(element => {
+    //   //   element.forEach(product => {
+    //   //     product._id
+    //   //     product.done
+    //   //   })
+    //   // })
+    //   state.products = action.payload.products
+    // },
+    setProductsHaveDone: (state, action) => {
+      state.productsHaveDone = action.payload.productsHaveDone
+    },
     setMessageAlert: (state, action) => {
       state.messageAlert.type = action.payload.type
       state.messageAlert.message = action.payload.message
     },
     setLogin: (state, action) => {
-      state.store = action.payload.store
+      state.store.storeId = action.payload.storeId
+      state.store.number = action.payload.number
       state.token = action.payload.token
     },
     setLogout: (state) => {
-      state.store = null
+      state.store.storeId = ''
+      state.store.number = null
       state.token = null
     },
   }
@@ -49,6 +69,8 @@ export const {
   setPage,
   setProducts,
   setNewProduct,
+  // setUpdateDoneInProducts,
+  setProductsHaveDone,
   setMessageAlert,
   setLogin,
   setLogout,

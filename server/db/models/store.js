@@ -2,6 +2,11 @@ const { Schema, model } = require('mongoose')
 
 // Definir el esquema del documento
 const storeSchema = new Schema({
+  store: {
+    type: Number,
+    max: [500, 'Store must be a maximum of 500'],
+    required: true,
+  },
   createdAt: {
     type: Date,
     immutable: true,
