@@ -1,65 +1,25 @@
 import { Box, Button, TextField, useTheme } from '@mui/material'
 import { useRef, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLogin, setMessageAlert } from '../../state'
+import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack'
+import { setMessageAlert } from '../../state'
+import login from '../../utils/frontendRequests/CREATE/login'
 
 const index = () => {
   console.log('iteración')
   const dispatch = useDispatch()
-  const { palette } = useTheme()
   const { enqueueSnackbar } = useSnackbar()
-  const { messageAlert } = useSelector(state => state)
+  const { palette } = useTheme()
   const formRef = useRef(null)
-
-  const showSnackbar = (type, response) => {
-    dispatch(setMessageAlert({ type, message: response.message }))
-  }
+  const { messageAlert } = useSelector(state => state)
+  const navigate = useNavigate()
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    login()
+    login(dispatch, navigate)
     if (formRef.current) {
       formRef.current.reset()
-    }
-  }
-
-  const login = async () => {
-    try {
-      const storeValue = document.getElementById('store').value
-
-      const response = await fetch(
-        'http://localhost:8080/login',
-        // 'http://expirydates.fly.dev/login',
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ store: storeValue }),
-        }
-      )
-      const loggedIn = await response.json()
-
-      if (response.ok) {
-        console.log(loggedIn.storeId)
-        console.log(typeof (loggedIn.storeId)) // String
-        showSnackbar('success', loggedIn)
-        // dispatch(setLogin({ storeId: 'hi', number: storeValue, token: null }))
-        // dispatch((dispatch) => {
-        //   dispatch(setLogin({ storeId: loggedIn.storeId, number: storeValue, token: null }))
-        //   dispatch(setMessageAlert({ type: 'success', message: loggedIn.message }))
-        // })
-        // navigate('/home')
-      } else {
-        /* Handle incorrect store */
-        // if (loggedIn.error) {
-        //   errors.store = 'Incorrect store number'
-        // }
-        showSnackbar('error', loggedIn)
-        console.error(loggedIn)
-      }
-    } catch (error) {
-      showSnackbar('error', { message: 'Something went wrong' })
-      console.error(error)
     }
   }
 
@@ -72,7 +32,6 @@ const index = () => {
           horizontal: 'right'
         },
       })
-
       dispatch(setMessageAlert({ type: '', message: '' }))
     }
   }, [messageAlert])

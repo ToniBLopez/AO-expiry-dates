@@ -2,8 +2,6 @@ import dataClassification from '../../dataClassification'
 
 const getProductsData = async (dispatch, dataRequest) => {
   try {
-    console.log('dataRequest')
-    console.log(dataRequest)
     const datesResponse = await fetch(
       `http://localhost:8080/products/${dataRequest}`,
       // `http://expirydates.fly.dev/products/${dataRequest}`,

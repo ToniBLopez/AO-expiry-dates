@@ -41,7 +41,7 @@ const productsCollection = {
           ]
         })
         .sort({ expiryDate: 1 })
-      console.log('Products obtained successfully, page: Home')
+      console.log('Products obtained successfully. Change app page. Page: Home')
       res.status(200).json(productsData)
     } catch (err) {
       console.err(err)
@@ -51,7 +51,7 @@ const productsCollection = {
   getAllProducts: async (res) => {
     try {
       const productsData = await Product.find().sort({ expiryDate: 1 })
-      console.log('Products obtained successfully, page: All')
+      console.log('Products obtained successfully. Change app page. Page: All')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -60,7 +60,7 @@ const productsCollection = {
   getNotDoneProducts: async (res) => {
     try {
       const productsData = await Product.find({ done: false }).sort({ expiryDate: 1 })
-      console.log('Products obtained successfully, page: Not Done')
+      console.log('Products obtained successfully. Change app page. Page: Not Done')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -69,7 +69,7 @@ const productsCollection = {
   getDoneProducts: async (res) => {
     try {
       const productsData = await Product.find({ done: true }).sort({ expiryDate: 1 })
-      console.log('Products obtained successfully, page: Done')
+      console.log('Products obtained successfully. Change app page. Page: Done')
       res.status(200).json(productsData)
     } catch (err) {
       res.status(500).json({ message: err.message })
@@ -113,19 +113,19 @@ const productsCollection = {
               ]
             })
               .sort({ expiryDate: 1 })
-            console.log('Products obtained successfully. Page: Home')
+            console.log('Products obtained successfully. Updated Check. Page: Home')
             break;
           case 'all':
             productsData = await Product.find().sort({ expiryDate: 1 })
-            console.log('Products obtained successfully. Page: All')
+            console.log('Products obtained successfully. Updated Check. Page: All')
             break;
           case 'done':
             productsData = await Product.find({ done: true }).sort({ expiryDate: 1 })
-            console.log('Products obtained successfully. Page: Done')
+            console.log('Products obtained successfully. Updated Check. Page: Done')
             break;
           case 'not done':
             productsData = await Product.find({ done: false }).sort({ expiryDate: 1 })
-            console.log('Products obtained successfully. Page: Not Done')
+            console.log('Products obtained successfully. Updated Check. Page: Not Done')
             break;
         }
         res.status(200).json({ message: 'Update successful', products: productsData, })

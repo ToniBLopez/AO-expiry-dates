@@ -1,4 +1,4 @@
-import getProductsData from "../GET"
+import getProductsData from "../READ"
 
 const removeProduct = async ({
   dispatch,

@@ -7,3 +7,8 @@ Created using the MERN stack:
 - **E**xpress.js
 - **R**eact
 - **N**ode.js
+
+##### Backend Part
+- [MongoDB](https://www.mongodb.com/) using Mongoose.
+- [Webpack](https://webpack.js.org/) to bundle and compile the code.
+- [Jwt](https://jwt.io/) for customer authentication and authorization.

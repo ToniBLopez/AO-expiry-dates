@@ -4,7 +4,7 @@ import {
   useTheme
 } from "@mui/material"
 import { useDispatch, useSelector } from 'react-redux'
-import { setPage } from "../state"
+import { setPage } from "../../state"
 
 const Options = () => {
   const theme = useTheme()

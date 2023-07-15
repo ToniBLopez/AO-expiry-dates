@@ -42,14 +42,18 @@ const authSlice = createSlice({
       state.messageAlert.type = action.payload.type
       state.messageAlert.message = action.payload.message
     },
-    setLogin: (state, action) => {
-      state.store.storeId = action.payload.storeId
-      state.store.number = action.payload.number
+    setStore: (state, action) => {
+      state.store = {
+        storeId: action.payload.storeId,
+        number: action.payload.number,
+      }
       state.token = action.payload.token
     },
     setLogout: (state) => {
-      state.store.storeId = ''
-      state.store.number = null
+      state.store = {
+        storeId: '',
+        number: null,
+      }
       state.token = null
     },
   }
@@ -62,7 +66,7 @@ export const {
   setNewProduct,
   setProductsHaveDone,
   setMessageAlert,
-  setLogin,
+  setStore,
   setLogout,
 } = authSlice.actions
 export default authSlice.reducer
