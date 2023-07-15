@@ -1,4 +1,3 @@
-import { setProducts } from '../../../state'
 import dataClassification from '../../dataClassification'
 
 const updateCheck = async ({

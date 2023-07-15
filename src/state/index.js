@@ -17,7 +17,7 @@ const initialState = {
     number: null,
   },
   token: null,
-};
+}
 
 const authSlice = createSlice({
   name: 'auth',
@@ -35,15 +35,6 @@ const authSlice = createSlice({
     setNewProduct: (state) => {
       state.newProduct = !state.newProduct
     },
-    // setUpdateDoneInProducts: (state, action) => { // in development...
-    //   // Object.values(state.products).forEach(element => {
-    //   //   element.forEach(product => {
-    //   //     product._id
-    //   //     product.done
-    //   //   })
-    //   // })
-    //   state.products = action.payload.products
-    // },
     setProductsHaveDone: (state, action) => {
       state.productsHaveDone = action.payload.productsHaveDone
     },
@@ -69,10 +60,9 @@ export const {
   setPage,
   setProducts,
   setNewProduct,
-  // setUpdateDoneInProducts,
   setProductsHaveDone,
   setMessageAlert,
   setLogin,
   setLogout,
-} = authSlice.actions;
-export default authSlice.reducer;
+} = authSlice.actions
+export default authSlice.reducer

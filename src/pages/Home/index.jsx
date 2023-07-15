@@ -73,11 +73,6 @@ const index = () => {
     updateProducts()
   }, [page, newProduct])
   useEffect(() => {
-    if (newProduct) {
-      // Actualizar solo el frontend añadiendo el producto en cuestión
-    }
-  }, [newProduct])
-  useEffect(() => {
     if (confirmDeletion.state) {
       console.log(confirmDeletion._id)
       removeProduct({

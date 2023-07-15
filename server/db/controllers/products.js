@@ -99,12 +99,19 @@ const productsCollection = {
             const weekStartDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString()
             const weekEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toISOString()
             productsData = await Product
-              .find({
-                expiryDate: {
-                  $gte: weekStartDate,
-                  $lte: weekEndDate
-                }
-              })
+            .find({
+              $and: [
+                {
+                  expiryDate: {
+                    $gte: weekStartDate,
+                    $lte: weekEndDate
+                  }
+                },
+                {
+                  done: false
+                },
+              ]
+            })
               .sort({ expiryDate: 1 })
             console.log('Products obtained successfully. Page: Home')
             break;
