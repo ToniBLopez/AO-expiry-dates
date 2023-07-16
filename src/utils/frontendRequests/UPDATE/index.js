@@ -8,8 +8,8 @@ const updateCheck = async ({
 }) => {
   try {
     const response = await fetch(
-      'http://localhost:8080/products/updateDone',
-      // 'http://expirydates.fly.dev/products/updateDone',
+      // 'http://localhost:8080/products/updateDone',
+      'http://expirydates.fly.dev/products/updateDone',
       {
         method: 'PATCH',
         headers: {

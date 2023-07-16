@@ -4,8 +4,8 @@ const login = async (dispatch, navigate) => {
   try {
     const storeValue = document.getElementById('store').value
     const response = await fetch(
-      'http://localhost:8080/login',
-      // 'http://expirydates.fly.dev/login',
+      // 'http://localhost:8080/login',
+      'http://expirydates.fly.dev/login',
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

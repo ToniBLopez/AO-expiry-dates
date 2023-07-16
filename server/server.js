@@ -2,7 +2,7 @@ const express = require('express')
 const path = require('path')
 const helmet = require('helmet')
 const morgan = require('morgan')
-// const bodyParser = require('body-parser') // DESCOMENTAR
+const bodyParser = require('body-parser') // DESCOMENTAR
 const cors = require('cors')
 
 require("dotenv").config({ path: path.resolve(__dirname, '.env') })
@@ -26,8 +26,8 @@ app.use(helmet.contentSecurityPolicy({ // Set the CSP policy
 }))
 // Logs HTTP requests arriving to the server in the console
 app.use(morgan("common"))
-// app.use(bodyParser.json({ limit: "30mb", extended: true })) // DESCOMENTAR
-// app.use(bodyParser.urlencoded({ limit: "30mb", extended: true })) // DESCOMENTAR
+app.use(bodyParser.json({ limit: "30mb", extended: true })) // DESCOMENTAR
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true })) // DESCOMENTAR
 app.use(cors())
 // Allows the use of files for webpack
 app.use(express.static(path.join(__dirname, '../build')))

@@ -9,8 +9,8 @@ const removeProduct = async ({
 }) => {
   try {
     const datesResponse = await fetch(
-      'http://localhost:8080/products/deleteOne',
-      // 'http://expirydates.fly.dev/products/deleteOne',
+      // 'http://localhost:8080/products/deleteOne',
+      'http://expirydates.fly.dev/products/deleteOne',
       {
         method: 'DELETE',
         headers: {

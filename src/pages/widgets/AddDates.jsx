@@ -28,8 +28,8 @@ const AddDates = () => {
       const expiryDateId = document.getElementById('expiryDateId').value
       /* CREATE */
       const response = await fetch(
-        'http://localhost:8080/products/createOne',
-        // 'http://expirydates.fly.dev/products/createOne',
+        // 'http://localhost:8080/products/createOne',
+        'http://expirydates.fly.dev/products/createOne',
         {
           method: 'POST',
           headers: {
