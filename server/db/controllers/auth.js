@@ -11,7 +11,7 @@ const authCollection = {
   login: async (req, res) => {
     try {
       const { store } = req.body
-      if (Number(store) >= 500) { // Number(store) = 67 (pasa de string a número entero)
+      if (Number(store) > 500) { // Number(store) = 67 (pasa de string a número entero)
         console.log('The store number is too high. Number: ' + store)
         return res.status(400).json({ message: 'The store number is too high' })
       }

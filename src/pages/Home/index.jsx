@@ -26,7 +26,7 @@ const index = () => {
   const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch()
   const theme = useTheme()
-  const { page, newProduct, messageAlert, products, productsHaveDone } = useSelector(state => state)
+  const { page, newProduct, messageAlert, products, productsHaveDone, store } = useSelector(state => state)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [clickOnCheck, setClickOnCheck] = useState(false)
@@ -39,6 +39,7 @@ const index = () => {
     _id: '',
     state: false
   })
+  const storeId = store.storeId
 
   const showSnackbar = (type, response) => {
     dispatch(setMessageAlert({ type, message: response.message }))
@@ -55,7 +56,7 @@ const index = () => {
   }
   const updateProducts = () => {
     const dataRequest = dataToRequest()
-    getProductsData(dispatch, dataRequest)
+    getProductsData(dispatch, storeId, dataRequest)
     setLoading(false)
   }
   const isCheck = (_id) => {
@@ -77,6 +78,7 @@ const index = () => {
       console.log(confirmDeletion._id)
       removeProduct({
         dispatch,
+        storeId,
         dataToRequest,
         confirmDeletion,
         showSnackbar
@@ -99,6 +101,7 @@ const index = () => {
     if (clickOnCheck) {
       updateCheck({
         dispatch,
+        storeId,
         productsHaveDone,
         page,
       })

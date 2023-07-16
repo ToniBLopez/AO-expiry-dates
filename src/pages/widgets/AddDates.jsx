@@ -5,7 +5,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { memo, useRef } from "react"
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 // import { useFormik } from 'formik'
 import { setNewProduct, setMessageAlert } from "../../state"
 
@@ -13,6 +13,7 @@ const AddDates = () => {
   const theme = useTheme()
   const dispatch = useDispatch()
   const formRef = useRef(null)
+  const { store } = useSelector(state => state)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -35,8 +36,9 @@ const AddDates = () => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+            store_id: store.storeId,
             name: nameId,
-            expiryDate: expiryDateId
+            expiryDate: expiryDateId,
           })
         }
       )

@@ -2,6 +2,7 @@ import getProductsData from "../READ"
 
 const removeProduct = async ({
   dispatch,
+  storeId,
   dataToRequest,
   confirmDeletion,
   showSnackbar
@@ -16,6 +17,7 @@ const removeProduct = async ({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          storeId,
           productId: confirmDeletion._id,
         }),
       }
@@ -25,7 +27,7 @@ const removeProduct = async ({
       showSnackbar('success', savedDatesResponse)
       console.log(savedDatesResponse)
       const dataRequest = dataToRequest()
-      getProductsData(dispatch, dataRequest)
+      getProductsData(dispatch, storeId, dataRequest)
     } else {
       showSnackbar('error', savedDatesResponse)
       console.error(savedDatesResponse)

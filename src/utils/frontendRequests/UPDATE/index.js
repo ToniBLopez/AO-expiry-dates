@@ -2,6 +2,7 @@ import dataClassification from '../../dataClassification'
 
 const updateCheck = async ({
   dispatch,
+  storeId,
   productsHaveDone,
   page,
 }) => {
@@ -15,6 +16,7 @@ const updateCheck = async ({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          storeId,
           productId: productsHaveDone['lastUpdatedId'],
           page,
         }),

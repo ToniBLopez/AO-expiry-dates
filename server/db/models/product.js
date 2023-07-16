@@ -46,6 +46,11 @@ const productSchema = new Schema({
     type: Date,
     default: () => Date.now(),
   },
+  storeId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Store',
+    required: true,
+  },
 }, {
   collection: 'productsExpiration'
 })

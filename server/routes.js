@@ -23,16 +23,16 @@ module.exports = {
       postProduct(req, res)
     })
     app.get('/products/weekly', (req, res) => {
-      getWeeklyProducts(res)
+      getWeeklyProducts(req, res)
     })
     app.get('/products/all', (req, res) => {
-      getAllProducts(res)
+      getAllProducts(req, res)
     })
     app.get('/products/notDone', (req, res) => {
-      getNotDoneProducts(res)
+      getNotDoneProducts(req, res)
     })
     app.get('/products/done', (req, res) => {
-      getDoneProducts(res)
+      getDoneProducts(req, res)
     })
     app.patch('/products/updateDone', (req, res) => {
       updateProductDone(req, res)
